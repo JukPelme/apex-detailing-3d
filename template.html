@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>APEX DETAILING — интерактивный прайс</title>
+<meta name="description" content="Тапни по зоне машины — узнай цену. Демо интерактивного 3D-прайса для детейлинг-студии.">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  :root { --bg:#0b0d10; --fg:#f2f4ef; --dim:#8b9188; --lime:#c8f04c; --card:#15181d; }
+  html,body { height:100%; }
+  body { background:radial-gradient(120% 90% at 50% 0%, #14181f 0%, var(--bg) 60%);
+         color:var(--fg); font-family:'Segoe UI',system-ui,sans-serif; overflow:hidden;
+         touch-action:none; user-select:none; -webkit-user-select:none; }
+  #scene { position:fixed; inset:0; }
+  #scene canvas { display:block; }
+  #loader { position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
+            color:var(--dim); letter-spacing:.3em; font-size:12px; z-index:9; }
+
+  header { position:fixed; top:0; left:0; right:0; z-index:4; display:flex;
+           justify-content:space-between; align-items:center; padding:18px 22px; pointer-events:none; }
+  .brand { font-weight:800; letter-spacing:.12em; font-size:16px; }
+  .brand em { font-style:normal; color:var(--lime); }
+  .brand span { display:block; font-size:10px; font-weight:400; color:var(--dim); letter-spacing:.28em; margin-top:3px; }
+  .badge { font-size:10px; letter-spacing:.2em; color:var(--dim); border:1px solid #2a2e35;
+           padding:6px 12px; border-radius:20px; }
+
+  #hint { position:fixed; left:50%; transform:translateX(-50%); bottom:max(18px, env(safe-area-inset-bottom));
+          color:var(--dim); font-size:11px; letter-spacing:.18em; z-index:4; white-space:nowrap;
+          transition:opacity .4s; }
+
+  #markers { position:fixed; inset:0; z-index:3; pointer-events:none; }
+  .dot { position:absolute; top:0; left:0; width:34px; height:34px; margin:-17px 0 0 -17px;
+         background:none; border:none; cursor:pointer; pointer-events:auto;
+         transition:opacity .25s; }
+  .dot-core { position:absolute; inset:9px; border-radius:50%;
+              background:rgba(200,240,76,.92); box-shadow:0 0 10px rgba(200,240,76,.7); }
+  .dot::before { content:''; position:absolute; inset:4px; border-radius:50%;
+                 border:1px solid rgba(200,240,76,.55); animation:pulse 2s infinite; }
+  .dot.active .dot-core { background:#fff; box-shadow:0 0 14px rgba(255,255,255,.9); }
+  @keyframes pulse { 0% {transform:scale(.7); opacity:1;} 100% {transform:scale(1.7); opacity:0;} }
+
+  #panel { position:fixed; z-index:5; background:rgba(21,24,29,.92); backdrop-filter:blur(14px);
+           border:1px solid #262b33; border-radius:20px; padding:22px;
+           transition:transform .35s cubic-bezier(.2,.9,.25,1), opacity .3s; }
+  @media (min-width:701px) {
+    #panel { top:90px; right:26px; width:340px; opacity:0; transform:translateX(30px); pointer-events:none; }
+    #panel.open { opacity:1; transform:none; pointer-events:auto; }
+  }
+  @media (max-width:700px) {
+    #panel { left:10px; right:10px; bottom:10px; border-radius:22px 22px 18px 18px;
+             transform:translateY(115%); padding-bottom:max(22px, env(safe-area-inset-bottom)); }
+    #panel.open { transform:none; }
+  }
+  #p-close { position:absolute; top:14px; right:14px; width:32px; height:32px; border-radius:50%;
+             border:1px solid #2e343d; background:none; color:var(--dim); font-size:15px; cursor:pointer; }
+  #p-title { font-size:20px; font-weight:800; letter-spacing:.02em; }
+  #p-desc { color:var(--dim); font-size:13px; line-height:1.55; margin:8px 0 14px; }
+  .svc { display:flex; justify-content:space-between; gap:14px; padding:11px 0;
+         border-top:1px solid #232830; font-size:14px; align-items:baseline; }
+  .svc span { color:#cfd4c9; }
+  .svc b { color:var(--lime); white-space:nowrap; font-weight:700; }
+  #p-cta { display:block; text-align:center; margin-top:16px; background:var(--lime); color:#0c0e0a;
+           padding:13px 0; border-radius:30px; font-weight:800; text-decoration:none; font-size:14px;
+           letter-spacing:.03em; }
+</style>
+</head>
+<body>
+<div id="scene"></div>
+<div id="loader">ЗАГРУЗКА 3D…</div>
+<header>
+  <div class="brand">APEX<em>·</em>DETAILING<span>ИНТЕРАКТИВНЫЙ ПРАЙС</span></div>
+  <div class="badge">ДЕМО</div>
+</header>
+<div id="markers"></div>
+<div id="panel">
+  <button id="p-close" aria-label="Закрыть">✕</button>
+  <div id="p-title"></div>
+  <div id="p-desc"></div>
+  <div id="p-list"></div>
+  <a id="p-cta" href="#">Записаться →</a>
+</div>
+<div id="hint">КРУТИ МАШИНУ · ТАПНИ ПО ТОЧКЕ</div>
+<script>window.MODEL_B64 = "__MODEL_B64__";</script>
+<script>__BUNDLE__</script>
+</body>
+</html>
