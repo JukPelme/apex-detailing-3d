@@ -214,12 +214,6 @@ loader.load('ferrari.glb', gltf => {
       car.add(mesh);
       pickables.push(mesh);
       z.hlObjects.push(mesh);
-      const edges = new THREE.LineSegments(
-        new THREE.EdgesGeometry(mesh.geometry),
-        new THREE.LineBasicMaterial({ color: HL_COLOR, transparent: true, opacity: 0 })
-      );
-      mesh.add(edges);
-      z.hlObjects.push(edges);
     });
     /* реальные меши зоны */
     (z.meshNames || []).forEach(n => {
@@ -295,10 +289,8 @@ const panelList = document.getElementById('p-list');
 
 function setHighlight(zoneId, on) {
   const z = zoneById[zoneId]; if (!z) return;
-  if (!z.hideBox) {
-    z.hlObjects.forEach(o => { o.material.opacity = on ? (o.isLineSegments ? 0.8 : 0.1) : 0; });
-  }
-  const glow = z.hideBox ? 0x8fb324 : 0x5a6e12;
+  /* коробки — только невидимые хитзоны, подсветка исключительно по мешам */
+  const glow = 0x8fb324;
   z.realMeshes.forEach(o => {
     if (on) {
       if (o.userData._em === undefined) o.userData._em = o.material.emissive ? o.material.emissive.getHex() : null;
