@@ -20,11 +20,12 @@ const ZONES = [
   {
     id: 'lights', label: 'Оптика',
     boxes: [
-      { c: [0.36, 0.58, 0.12], s: [0.26, 0.16, 0.18] },
-      { c: [-0.36, 0.58, 0.12], s: [0.26, 0.16, 0.18] },
+      { c: [0.62, 0.54, 0.14], s: [0.15, 0.14, 0.19] },
+      { c: [-0.62, 0.54, 0.14], s: [0.15, 0.14, 0.19] },
     ],
     meshNames: ['lights', 'leds'],
-    anchor: [0.4, 0.62, 0.1],
+    hideBox: true,
+    anchor: [0.63, 0.59, 0.12],
     desc: 'Мутные фары режут свет на 40% и старят машину.',
     services: [
       ['Полировка фар (пара)', '3 500 ₽'],
@@ -46,10 +47,10 @@ const ZONES = [
   {
     id: 'doors', label: 'Двери и пороги',
     boxes: [
-      { c: [0.44, 0.38, 0.52], s: [0.14, 0.5, 0.34] },
-      { c: [-0.44, 0.38, 0.52], s: [0.14, 0.5, 0.34] },
+      { c: [0.8, 0.38, 0.52], s: [0.12, 0.5, 0.34] },
+      { c: [-0.8, 0.38, 0.52], s: [0.12, 0.5, 0.34] },
     ],
-    anchor: [0.5, 0.45, 0.5],
+    anchor: [0.84, 0.45, 0.5],
     desc: 'Двери, пороги, зеркала: плёнка на кромки и химчистка изнутри.',
     services: [
       ['Плёнка на кромки дверей + пороги', '5 500 ₽'],
@@ -85,7 +86,7 @@ const ZONES = [
     id: 'wheels', label: 'Диски и резина',
     boxes: [],
     wheelSubtrees: true,
-    anchor: [0.5, 0.18, 0.24],
+    anchor: [0.78, 0.18, 0.24],
     desc: 'Диски первыми ловят реагенты и тормозную пыль.',
     services: [
       ['Керамика на диски (4 шт)', '4 000 ₽'],
@@ -294,11 +295,14 @@ const panelList = document.getElementById('p-list');
 
 function setHighlight(zoneId, on) {
   const z = zoneById[zoneId]; if (!z) return;
-  z.hlObjects.forEach(o => { o.material.opacity = on ? (o.isLineSegments ? 0.8 : 0.1) : 0; });
+  if (!z.hideBox) {
+    z.hlObjects.forEach(o => { o.material.opacity = on ? (o.isLineSegments ? 0.8 : 0.1) : 0; });
+  }
+  const glow = z.hideBox ? 0x8fb324 : 0x5a6e12;
   z.realMeshes.forEach(o => {
     if (on) {
       if (o.userData._em === undefined) o.userData._em = o.material.emissive ? o.material.emissive.getHex() : null;
-      if (o.material.emissive) { o.material = o.material.clone(); o.material.emissive.setHex(0x5a6e12); o.userData._cloned = true; }
+      if (o.material.emissive) { o.material = o.material.clone(); o.material.emissive.setHex(glow); o.userData._cloned = true; }
     } else if (o.userData._em !== undefined && o.material.emissive) {
       o.material.emissive.setHex(o.userData._em || 0x000000);
     }
